@@ -9,7 +9,10 @@ export async function getBooking(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function createBooking(req: AuthenticatedRequest, res: Response) {
-  res.send('Create Booking');
+  const { userId } = req;
+  const { roomId } = req.body;
+  const booking = await bookingService.createBooking(userId, roomId);
+  res.send(booking);
 }
 
 export async function editBooking(req: AuthenticatedRequest, res: Response) {
