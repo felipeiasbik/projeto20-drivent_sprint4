@@ -12,7 +12,10 @@ async function getBooking(userId: number) {
   const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
   if (!ticket) throw notFoundError();
 
-  return await bookingRepository.getBooking(userId);
+  const booking = await bookingRepository.getBooking(userId);
+  if (!booking) throw notFoundError();
+
+  return booking;
 }
 
 async function createBooking(userId: number, roomId: number) {
@@ -32,7 +35,8 @@ async function createBooking(userId: number, roomId: number) {
   const availableRoom = await bookingRepository.getAllRoomsByRoomId(roomId);
   if (availableRoom.length >= room.capacity) throw forbiddenError();
 
-  return await bookingRepository.createBooking(roomId, userId);
+  const booking = await bookingRepository.createBooking(roomId, userId);
+  return { bookingId: booking.id };
 }
 
 const bookingService = {
