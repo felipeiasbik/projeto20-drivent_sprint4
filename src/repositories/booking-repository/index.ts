@@ -19,10 +19,24 @@ async function createBooking(roomId: number, userId: number) {
   });
 }
 
+async function editBooking(roomId: number, userId: number) {
+  return await prisma.booking.create({
+    data: { roomId, userId },
+  });
+}
+
+async function deleteBooking(id: number) {
+  return await prisma.booking.delete({
+    where: { id },
+  });
+}
+
 const bookingRepository = {
   getBooking,
   getAllRoomsByRoomId,
   createBooking,
+  editBooking,
+  deleteBooking,
 };
 
 export default bookingRepository;
