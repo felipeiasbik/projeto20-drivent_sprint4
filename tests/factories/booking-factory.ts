@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker';
-import { Address, Booking, Enrollment, Room, Ticket, TicketStatus, TicketType } from '@prisma/client';
+import { Address, Booking, Enrollment, Room, Ticket, TicketType } from '@prisma/client';
 import { prisma } from '@/config';
 
 export async function createBookingFactory(userId: number, roomId: number) {

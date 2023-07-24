@@ -18,6 +18,17 @@ beforeEach(() => {
 });
 
 describe('GET /booking', () => {
+  it('should respond with status 404 if enrollment not exists', async () => {
+    const userId = 1;
+
+    jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockResolvedValueOnce(null);
+    const booking = bookingService.getBooking(userId);
+    expect(booking).rejects.toEqual({
+      name: 'NotFoundError',
+      message: 'No result for this search!',
+    });
+  });
+
   it('should respond with status 404 if user has not booked a room', async () => {
     const userId = 1;
 
@@ -32,6 +43,18 @@ describe('GET /booking', () => {
       message: 'No result for this search!',
     });
   });
+
+  it('should respond with status 404 if ticket not exists', async () => {
+    const userId = 1;
+
+    jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockResolvedValueOnce(enrollmentWithAddressFactory());
+    jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(null);
+    const booking = bookingService.getBooking(userId);
+    expect(booking).rejects.toEqual({
+      name: 'NotFoundError',
+      message: 'No result for this search!',
+    });
+  });
 });
 
 describe('POST /booking', () => {
@@ -40,6 +63,19 @@ describe('POST /booking', () => {
     const roomId = 1;
 
     jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockResolvedValueOnce(null);
+    const booking = bookingService.createBooking(userId, roomId);
+    expect(booking).rejects.toEqual({
+      name: 'NotFoundError',
+      message: 'No result for this search!',
+    });
+  });
+
+  it('should respond with status 404 if no exists ticket', async () => {
+    const userId = 1;
+    const roomId = 1;
+
+    jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockResolvedValueOnce(enrollmentWithAddressFactory());
+    jest.spyOn(ticketsRepository, 'findTicketByEnrollmentId').mockResolvedValueOnce(null);
     const booking = bookingService.createBooking(userId, roomId);
     expect(booking).rejects.toEqual({
       name: 'NotFoundError',

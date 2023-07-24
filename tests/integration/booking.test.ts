@@ -172,29 +172,3 @@ describe('PUT /booking', () => {
     });
   });
 });
-// GET /BOOKING
-// exibir a reserva do usuário com o quarto selecionado
-//OK retornar 200
-
-//OK retornar 401 se o token for inválido
-//OK retornar 404 se o usuário não tiver reservas
-
-// POST /BOOKING
-// retornar o id da reserva
-//OK retornar 200
-
-//OK Retorna status 401 ao enviar um token inválido?
-// Retorna status 403 se o ticket do usuário é remoto?
-// Retorna status 403 se o ticket do usuário não inclui hotel?
-// Retorna status 403 se o ticket do usuário não foi pago?
-// Retorna status 403 se o quarto não possui vagas?
-// Retorna status 404 se o quarto não existe?
-
-// PUT /BOOKING
-// retornar o id da reserva
-//OK retornar 200
-
-//OK Retorna status 401 ao enviar um token inválido?
-// Retorna status 403 se o usuário não tem reserva?
-// Retorna status 403 se o novo quarto não tem vagas?
-// Retorna 404 se o quarto não existe?
