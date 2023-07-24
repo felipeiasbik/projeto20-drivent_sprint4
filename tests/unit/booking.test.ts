@@ -1,6 +1,4 @@
-import faker from '@faker-js/faker';
 import {
-  createBookingFactory,
   enrollmentWithAddressFactory,
   findBookingFactory,
   findTicketByEnrollmentIdFactory,
@@ -37,6 +35,18 @@ describe('GET /booking', () => {
 });
 
 describe('POST /booking', () => {
+  it('should respond with status 404 if no exists enrollment to user', async () => {
+    const userId = 1;
+    const roomId = 1;
+
+    jest.spyOn(enrollmentRepository, 'findWithAddressByUserId').mockResolvedValueOnce(null);
+    const booking = bookingService.createBooking(userId, roomId);
+    expect(booking).rejects.toEqual({
+      name: 'NotFoundError',
+      message: 'No result for this search!',
+    });
+  });
+
   it('should respond with status 403 if ticket is remote', async () => {
     const userId = 1;
     const roomId = 1;
@@ -113,6 +123,47 @@ describe('POST /booking', () => {
     jest.spyOn(roomRepository, 'getRoom').mockResolvedValueOnce(getRoomFactory(0));
     jest.spyOn(bookingRepository, 'getAllRoomsByRoomId').mockResolvedValueOnce(findBookingFactory());
     const booking = bookingService.createBooking(userId, roomId);
+    expect(booking).rejects.toEqual({
+      name: 'Forbidden',
+      message: 'Forbidden access!',
+    });
+  });
+});
+
+describe('PUT /booking', () => {
+  it('should respond with status 403 if booking not exists', async () => {
+    const userId = 1;
+    const roomId = 1;
+
+    jest.spyOn(bookingRepository, 'getBooking').mockResolvedValueOnce(null);
+    const booking = bookingService.editBooking(userId, roomId);
+    expect(booking).rejects.toEqual({
+      name: 'Forbidden',
+      message: 'Forbidden access!',
+    });
+  });
+
+  it('should respond with status 404 if room not exists', async () => {
+    const userId = 1;
+    const roomId = 1;
+
+    jest.spyOn(bookingRepository, 'getBooking').mockResolvedValueOnce(getBookingFactory());
+    jest.spyOn(roomRepository, 'getRoom').mockResolvedValueOnce(null);
+    const booking = bookingService.editBooking(userId, roomId);
+    expect(booking).rejects.toEqual({
+      name: 'NotFoundError',
+      message: 'No result for this search!',
+    });
+  });
+
+  it('should respond with status 403 if room has no vacancies', async () => {
+    const userId = 1;
+    const roomId = 1;
+
+    jest.spyOn(bookingRepository, 'getBooking').mockResolvedValueOnce(getBookingFactory());
+    jest.spyOn(roomRepository, 'getRoom').mockResolvedValueOnce(getRoomFactory(0));
+    jest.spyOn(bookingRepository, 'getAllRoomsByRoomId').mockResolvedValueOnce(findBookingFactory());
+    const booking = bookingService.editBooking(userId, roomId);
     expect(booking).rejects.toEqual({
       name: 'Forbidden',
       message: 'Forbidden access!',
